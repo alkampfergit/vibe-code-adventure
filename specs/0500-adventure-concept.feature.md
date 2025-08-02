@@ -14,3 +14,4 @@ And adventure is a series of rooms connected between them, each room can contain
 - As an author, I want to assign items and NPCs to specific rooms so that the world feels populated.
 - As an author, I want to save my progress while editing an adventure so that I don’t lose my work.
 - As an author, I want to publish or unpublish an adventure so that I control when it is available to players.
+- An adventure should have one or more goals that guide the player's experience. The player can exit an adventure even if it does not accomplish goals
