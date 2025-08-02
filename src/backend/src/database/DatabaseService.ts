@@ -1,4 +1,4 @@
-import { Database } from 'node:sqlite'
+import { DatabaseSync } from 'node:sqlite'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -6,13 +6,13 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export class DatabaseService {
-  private static db: Database | null = null
+  private static db: DatabaseSync | null = null
 
   static async initialize(): Promise<void> {
     const dbPath = path.join(__dirname, '../../../data/game.db')
     
     try {
-      this.db = new Database(dbPath)
+      this.db = new DatabaseSync(dbPath)
       await this.createTables()
       console.log('Database connected successfully')
     } catch (error) {
@@ -107,11 +107,11 @@ export class DatabaseService {
     ]
 
     for (const table of tables) {
-      await this.db.exec(table)
+      this.db.exec(table)
     }
   }
 
-  static getDb(): Database {
+  static getDb(): DatabaseSync {
     if (!this.db) {
       throw new Error('Database not initialized')
     }

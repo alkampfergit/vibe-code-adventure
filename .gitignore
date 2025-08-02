@@ -568,3 +568,7 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
+
+# Text Adventure specific
+src/backend/data/*.db
+src/backend/data/*.db-journal
