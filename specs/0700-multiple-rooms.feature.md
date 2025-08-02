@@ -1,1 +1,8 @@
-Multiple rooms/locations with descriptions
+- As a player, I want to move between different rooms so that I can explore the game world.
+- As a player, I want each room to have a unique description so that I can understand where I am.
+- As a player, I want to see a list of available exits in each room so that I know where I can go.
+- As a player, I want rooms to contain items that I can interact with or collect.
+- As a player, I want to encounter NPCs or puzzles or monsters in certain rooms to make exploration interesting.
+- As a player, I want my current location to be saved so I can resume from where I left off.
+- As a player, I want to be prevented from moving in invalid directions so that navigation feels logical.
+- As a player, I want to discover new rooms as I progress so that the world feels expansive.
