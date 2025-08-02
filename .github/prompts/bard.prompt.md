@@ -5,7 +5,7 @@ You will look in the specs subfolder, in that subfolder we have a series of subf
 
 Inside each subfolder, you will find user story files that describe the desired functionality for that feature.
 
-Your task is to take one file at a time, and then expand the user story with the following rule.
+Your task is to take one file at a time, and then modify the content of the file with the following rule. Never ask for confirmation never stop, if the user want you to stop it will stop. Proceed one file at a time until you made all the files.
 
 # Rule to create user stories.
 
