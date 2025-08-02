@@ -1,107 +1,42 @@
-# Vibe Text Adventure
+# Vibe Code Adventure
 
-A web-based text adventure game inspired by classic 80s/90s interactive fiction. Players create characters, explore rooms, manage inventory, interact with NPCs, and solve puzzles in a retro-styled gaming experience.
+A web application that recreates classic 80s/90s text adventures. Players log in with just a username, create a character, and explore a world using typed commands. The game features inventory management, multiple rooms, NPC interactions, puzzles, scoring, and the ability to save/load progress.
 
-## 🎮 Features
+## Features
 
-- **Simple Authentication**: Username-based login with session persistence
-- **Character Creation**: Customizable attributes (Strength, Dexterity, Intelligence)
-- **Text Command Parser**: Natural language commands with synonyms and feedback
+- **Simple Authentication**: Log in with just a username - no passwords required
+- **Character Creation**: Create and customize your character with attributes
+- **Text Command Interface**: Type commands to interact with the game world
 - **Inventory Management**: Collect, examine, and use items
-- **Multiple Rooms**: Explore interconnected locations with descriptions
-- **NPC Interactions**: Dialogue and combat systems
-- **Save/Load System**: Multiple save slots with progress tracking
-- **Scoring System**: Points tracking with explanations
-- **Responsive UI**: Works on desktop and mobile devices
-- **Retro Aesthetic**: 80s/90s terminal-inspired design
+- **Multiple Rooms**: Explore interconnected rooms and environments
+- **NPC Interactions**: Talk to and interact with non-player characters
+- **Combat System**: Turn-based combat with weapons and status effects
+- **Save/Load System**: Multiple save slots to preserve your progress
+- **Map System**: Visual representation of explored areas
+- **Scoring System**: Track your achievements and progress
+- **Responsive Design**: Works on both desktop and mobile devices
 
-## 🏗️ Architecture
+## Technology Stack
 
-### Project Structure
+### Frontend
+- **React** with **TypeScript** for the user interface
+- **Material-UI** for modern, responsive styling
+- Runs on port 5566
 
-```
-vibe-code-adventure/
-├── src/
-│   ├── frontend/                 # React TypeScript frontend
-│   │   ├── src/
-│   │   │   ├── components/       # React components
-│   │   │   │   ├── LoginForm.tsx
-│   │   │   │   ├── GameInterface.tsx
-│   │   │   │   ├── CharacterCreation.tsx
-│   │   │   │   ├── CommandInput.tsx
-│   │   │   │   └── GameOutput.tsx
-│   │   │   ├── services/         # API service layer
-│   │   │   │   ├── authService.ts
-│   │   │   └── gameService.ts
-│   │   │   ├── hooks/            # Custom React hooks
-│   │   │   ├── types/            # Frontend-specific types
-│   │   │   ├── utils/            # Utility functions
-│   │   │   ├── App.tsx           # Main application component
-│   │   │   ├── main.tsx          # Application entry point
-│   │   │   └── theme.ts          # Material-UI theme
-│   │   ├── public/               # Static assets
-│   │   ├── package.json
-│   │   ├── vite.config.ts
-│   │   └── tsconfig.json
-│   │
-│   ├── backend/                  # Node.js Express API server
-│   │   ├── src/
-│   │   │   ├── controllers/      # Request handlers
-│   │   │   │   ├── AuthController.ts
-│   │   │   │   └── GameController.ts
-│   │   │   ├── models/           # Data models (future use)
-│   │   │   ├── routes/           # API route definitions
-│   │   │   │   ├── authRoutes.ts
-│   │   │   │   └── gameRoutes.ts
-│   │   │   ├── services/         # Business logic
-│   │   │   │   ├── DatabaseService.ts
-│   │   │   │   └── CommandParser.ts
-│   │   │   ├── middleware/       # Express middleware
-│   │   │   │   └── errorHandler.ts
-│   │   │   ├── database/         # Database setup and migrations
-│   │   │   │   └── DatabaseService.ts
-│   │   │   ├── utils/            # Utility functions
-│   │   │   └── server.ts         # Express server setup
-│   │   ├── data/                 # SQLite database files
-│   │   ├── package.json
-│   │   └── tsconfig.json
-│   │
-│   └── shared/                   # Shared TypeScript types
-│       └── types/
-│           └── index.ts          # Common interfaces
-│
-├── specs/                        # Feature specifications
-├── package.json                  # Root package.json (workspace)
-├── CLAUDE.md                     # Project instructions
-└── README.md                     # This file
-```
+### Backend
+- **Node.js** with **Express** for REST API endpoints
+- **TypeScript** for type safety and maintainability
+- **SQLite** for lightweight, file-based data persistence
+- Runs on port 8000
 
-### Technology Stack
+### Testing
+- **Jest** for unit and integration testing
 
-#### Frontend
-- **React 18**: Modern component-based UI library
-- **TypeScript**: Type-safe JavaScript development
-- **Material-UI v5**: Component library with retro theming
-- **Vite**: Fast build tool and development server
-- **Axios**: HTTP client for API communication
-
-#### Backend
-- **Node.js**: JavaScript runtime environment
-- **Express**: Web application framework
-- **TypeScript**: Consistent typing across the stack
-- **SQLite**: Lightweight embedded database (node:sqlite)
-- **Security Middleware**: Helmet, CORS, rate limiting
-
-#### Development Tools
-- **Vitest**: Unit testing framework
-- **ESLint**: Code linting and formatting
-- **Concurrently**: Run multiple npm scripts simultaneously
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Git
+- Node.js (version 16 or higher)
+- npm (comes with Node.js)
 
 ### Installation
 
@@ -111,198 +46,190 @@ vibe-code-adventure/
    cd vibe-code-adventure
    ```
 
-2. **Install dependencies**
+2. **Navigate to the source directory**
    ```bash
-   # Install root dependencies and workspace packages
-   npm run install:all
+   cd src
    ```
 
-3. **Start development servers**
+3. **Install backend dependencies**
    ```bash
-   # Start both frontend and backend concurrently
+   npm install
+   ```
+
+4. **Install frontend dependencies**
+   ```bash
+   cd client
+   npm install
+   cd ..
+   ```
+
+### Running the Application
+
+1. **Start both frontend and backend**
+   ```bash
+   cd src
    npm run dev
    ```
 
-   Or start individually:
-   ```bash
-   # Backend only (http://localhost:3001)
-   npm run dev:backend
-   
-   # Frontend only (http://localhost:3000)
-   npm run dev:frontend
-   ```
+   This will start:
+   - Backend API server on http://localhost:8000
+   - Frontend React app on http://localhost:5566
 
-4. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001/api
-   - Health check: http://localhost:3001/api/health
+2. **Access the application**
+   - Open your browser and navigate to http://localhost:5566
+   - Enter a username to start playing
 
-### Building for Production
+### Running Tests
 
 ```bash
-# Build both frontend and backend
-npm run build
-
-# Or build individually
-npm run build:frontend
-npm run build:backend
-```
-
-### Testing
-
-```bash
-# Run all tests
+cd src
 npm test
-
-# Test individually
-npm run test:frontend
-npm run test:backend
 ```
 
-### Linting
+## Project Structure
 
-```bash
-# Lint all code
-npm run lint
-
-# Lint individually  
-npm run lint:frontend
-npm run lint:backend
+```
+vibe-code-adventure/
+├── src/
+│   ├── client/                 # React frontend application
+│   │   ├── src/
+│   │   │   ├── components/     # React components
+│   │   │   ├── App.tsx         # Main application component
+│   │   │   └── index.tsx       # Application entry point
+│   │   ├── public/             # Static assets
+│   │   └── package.json        # Frontend dependencies
+│   ├── server/                 # Node.js backend
+│   │   ├── database.ts         # Database operations and models
+│   │   ├── database.test.ts    # Database tests
+│   │   └── index.ts            # Express server and API routes
+│   ├── package.json            # Backend dependencies and scripts
+│   ├── tsconfig.json           # TypeScript configuration
+│   └── nodemon.json            # Nodemon configuration
+├── specs/                      # User stories and feature specifications
+│   ├── 0100/                   # Authentication features
+│   ├── 0200/                   # Command parser features
+│   ├── 0300/                   # Character creation features
+│   └── ...                     # Additional feature directories
+├── CLAUDE.md                   # Project instructions for AI assistant
+└── README.md                   # This file
 ```
 
-## 🎯 Game Features
+## Development Workflow
 
-### Authentication Flow
-1. User enters username on login screen
-2. System creates user account if doesn't exist
-3. Session persisted in localStorage
-4. Logout clears session data
+### Contributing Guidelines
 
-### Character Creation
-1. Enter character name
-2. Distribute 40 attribute points across:
-   - Strength (affects health and combat)
-   - Dexterity (affects speed and accuracy) 
-   - Intelligence (affects magic and puzzles)
-3. System calculates derived stats (health = strength × 10)
+1. **Feature Development**
+   - Each feature is documented in the `specs/` directory
+   - Follow the user story format for new features
+   - Implement features incrementally following the story acceptance criteria
 
-### Game Commands
-- `look` - Examine current room
-- `go [direction]` - Move between rooms (north, south, east, west)
-- `inventory` / `inv` - View carried items
-- `take [item]` - Pick up items
-- `use [item]` - Use inventory items
-- `talk [npc]` - Interact with characters
-- `save` - Save game progress
-- `score` - View current points
-- `help` - Show available commands
+2. **Code Standards**
+   - Use TypeScript for all new code
+   - Follow existing code style and conventions
+   - Write unit tests for new functionality
+   - Ensure all tests pass before committing
 
-### Game World
-- **Rooms**: Interconnected locations with descriptions, exits, items, and NPCs
-- **Items**: Objects with types (weapon, armor, consumable, quest, misc)
-- **NPCs**: Characters with dialogue trees, some hostile for combat
-- **Inventory**: Weight and value-based item management
-- **Scoring**: Points awarded for discoveries, quest completion, combat victories
+3. **Commit Process**
+   - Commit after each user story implementation
+   - Write clear, descriptive commit messages
+   - Test your changes before committing
 
-## 🔧 API Endpoints
+4. **Testing Strategy**
+   - Write unit tests after implementing features
+   - Focus on testing individual features rather than end-to-end tests
+   - Ensure database operations are properly tested
+
+### Available Scripts
+
+From the `src/` directory:
+
+- `npm run dev` - Start both frontend and backend in development mode
+- `npm run server` - Start only the backend server
+- `npm run client` - Start only the frontend application
+- `npm test` - Run all tests
+- `npm run build` - Build both frontend and backend for production
+
+### Server Management
+
+- The development setup assumes you keep a server running during development
+- Use the active running server first before starting a new one
+- Backend runs on port 8000, frontend on port 5566
+
+## Game Design
+
+### Authentication System
+- Players log in with just a username
+- No password required for simplicity
+- If username exists, player is automatically logged in to existing session
+- If username is new, a new player account is created
+- Multiple players can share the same username (each gets their own session)
+
+### User Stories
+The game features are organized into numbered feature sets in the `specs/` directory:
+
+- **0100**: Simple Authentication
+- **0200**: Text Command Parser
+- **0300**: Character Creation
+- **0400**: Inventory Management
+- **0500**: Adventure Concept
+- **0550**: Combat System
+- **0600**: Save/Load System
+- **0700**: Multiple Rooms
+- **0750**: Map System
+- **0800**: NPC Interactions
+- **0900**: Scoring and Tracking
+- **1000**: Responsive UI
+
+Each feature directory contains detailed user stories with acceptance criteria.
+
+## API Endpoints
 
 ### Authentication
-- `POST /api/auth/login` - User login with username
-- `POST /api/auth/logout` - User logout
+- `POST /api/auth/login` - Log in with username
+- `POST /api/auth/logout` - Log out current session
+- `GET /api/auth/session/:sessionId` - Validate session
 
-### Game Management  
-- `POST /api/game/character` - Create new character
-- `GET /api/game/state/:userId` - Load game state
-- `POST /api/game/save` - Save game progress
-- `POST /api/game/command` - Execute game command
+### User Management
+- `GET /api/users` - Get all users (for development/debugging)
 
-### Health Check
-- `GET /api/health` - Service status
+### General
+- `GET /api/hello` - Health check endpoint
 
-## 🗄️ Database Schema
+## Database Schema
 
-### Tables
-- **users**: User accounts and authentication
-- **characters**: Character stats and progression
-- **game_states**: Save game data and current state
-- **inventory_items**: Player item ownership
-- **items**: Game item definitions
-- **rooms**: World locations and connections
-- **npcs**: Non-player character data
+The application uses SQLite with the following main table:
 
-### Key Relationships
-- Users → Characters (one-to-many)
-- Characters → Game States (one-to-many)
-- Game States → Inventory Items (one-to-many)
-- Items ← Inventory Items (many-to-one)
+```sql
+CREATE TABLE user_sessions (
+  id TEXT PRIMARY KEY,
+  username TEXT NOT NULL,
+  status TEXT DEFAULT 'active',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  last_active DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-## 🎨 UI/UX Design
+## Contributing
 
-### Retro Aesthetic
-- **Colors**: Green text on black background (#00ff00 on #000000)
-- **Typography**: Monospace fonts throughout
-- **Layout**: Terminal-inspired with bordered containers
-- **Responsive**: Adapts to mobile and desktop screens
+1. **Fork the repository**
+2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
+3. **Follow the development workflow** outlined above
+4. **Commit your changes** (`git commit -m 'Add amazing feature'`)
+5. **Push to the branch** (`git push origin feature/amazing-feature`)
+6. **Open a Pull Request**
 
-### User Experience
-- **Immediate Feedback**: Commands show results instantly  
-- **Persistent State**: Game progress automatically saved
-- **Error Handling**: Clear messages for invalid commands
-- **Accessibility**: Keyboard navigation and screen reader support
+### Pull Request Guidelines
 
-## 🔒 Security Features
+- Ensure all tests pass
+- Follow the existing code style
+- Update documentation if needed
+- Reference any related user stories or issues
+- Provide a clear description of changes
 
-- **Rate Limiting**: Prevents API abuse (100 requests/15 minutes)
-- **Input Validation**: Sanitizes user inputs
-- **Error Handling**: Doesn't expose sensitive information
-- **CORS**: Configured for frontend domain
-- **Helmet**: Security headers for common vulnerabilities
+## License
 
-## 🧪 Testing Strategy
+This project is licensed under the ISC License.
 
-### Frontend Testing
-- Component rendering tests
-- User interaction testing
-- API service mocking
-- Theme and styling verification
+## Support
 
-### Backend Testing  
-- API endpoint testing
-- Database operation testing
-- Command parser testing
-- Error handling verification
-
-## 📈 Future Enhancements
-
-### Planned Features
-- **Combat System**: Turn-based battles with NPCs
-- **Map System**: Visual representation of explored areas
-- **Quest System**: Structured objectives and rewards
-- **Multiplayer**: Shared world experiences
-- **Adventure Editor**: User-created content
-- **Audio**: Sound effects and background music
-
-### Technical Improvements
-- **Caching**: Redis for session and game state caching
-- **Database**: PostgreSQL for production scalability
-- **Authentication**: JWT tokens and OAuth integration
-- **Monitoring**: Application metrics and logging
-- **Deployment**: Docker containers and CI/CD pipeline
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- Inspired by classic text adventures like Zork and Adventure
-- Built with modern web technologies for accessibility
-- Designed for both nostalgia and contemporary user experience
+For questions or issues, please refer to the user stories in the `specs/` directory or open an issue in the repository.

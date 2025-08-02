@@ -17,12 +17,23 @@ A web app that recreates classic 80s/90s text adventures. Players log in with ju
 
 ## Persistence
 
-- Use Node.js built-in `node:sqlite` module for local data persistence
+- Use Node.js node:sqlite for a lightweight, file-based database to store data for the game.
 
 ## Tooling & Testing
 
-- **Jest** or **Vitest**: For unit and integration testing.
-- **Vite** or **Create React App**: For frontend development tooling.
+- **Jest**: For unit and integration testing.
 
 ---
 This stack is designed for rapid development, scalability, and maintainability, suitable for a modern web-based text adventure
+
+# Development Workflow
+
+- Commit after each user story implementation to maintain clear version history and traceability
+- Write unit tests after implementing a feature to verify its functionality
+- Prefer testing each feature instead of doing end-to-end tests
+
+## ⁠Server Management
+
+- don't run 'npm run dev', always try to use active running server first because the user usually keeps a server running
+
+

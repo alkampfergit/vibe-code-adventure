@@ -11,10 +11,14 @@ Pods/
 **/node_modules/*
 **/.firebaserc
 
+**/game.db
 ### Firebase Patch ###
 .runtimeconfig.json
 .firebase/
 
+**/playwright-report/*
+**/test-results/*
+test-results/*
 ### Java ###
 # Compiled class file
 *.class
@@ -559,6 +563,10 @@ atlassian-ide-plugin.xml
 # Mongo Explorer plugin
 .idea/mongoSettings.xml
 
+# Data files
+
+src/data/** 
+
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 crashlytics.properties
@@ -572,3 +580,4 @@ fabric.properties
 # Text Adventure specific
 src/backend/data/*.db
 src/backend/data/*.db-journal
+src/frontend/page_content.html

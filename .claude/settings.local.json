@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run install:all:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(find:*)",
+      "Bash(pgrep:*)",
+      "Bash(npm init:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npm run test:e2e:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 30s npx playwright test:*)",
+      "Bash(npm install)",
+      "Bash(npm run server:*)",
+      "Bash(lsof:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm test)",
+      "Bash(npm install:*)",
+      "Bash(if exist game.db del game.db)",
+      "Bash(rm:*)"
+    ],
+    "deny": []
+  }
+}
