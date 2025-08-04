@@ -1,12 +1,15 @@
 import { GameEngine } from './gameEngine';
+import { CommandParser } from './commandParser';
 import { ParsedCommand } from '../types/command';
 
 describe('GameEngine', () => {
   let gameEngine: GameEngine;
+  let commandParser: CommandParser;
   const testSessionId = 'test-session-123';
 
   beforeEach(() => {
-    gameEngine = new GameEngine();
+    commandParser = new CommandParser();
+    gameEngine = new GameEngine(commandParser);
   });
 
   describe('getGameState', () => {
@@ -71,14 +74,8 @@ describe('GameEngine', () => {
       });
 
       test('should handle move command with direction', () => {
-        const command: ParsedCommand = {
-          verb: 'move',
-          noun: 'south',
-          originalInput: 'move south',
-          isValid: true
-        };
-
-        const result = gameEngine.executeCommand(testSessionId, command);
+        const parsed = commandParser.parse('move south');
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         
         expect(result.success).toBe(true);
         expect(result.message).toContain('You move south');
@@ -149,14 +146,8 @@ describe('GameEngine', () => {
       });
 
       test('should handle get command as synonym for take', () => {
-        const command: ParsedCommand = {
-          verb: 'get',
-          noun: 'key',
-          originalInput: 'get key',
-          isValid: true
-        };
-
-        const result = gameEngine.executeCommand(testSessionId, command);
+        const parsed = commandParser.parse('get key');
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         
         expect(result.success).toBe(true);
         expect(result.message).toContain('You take the key');
@@ -265,14 +256,8 @@ describe('GameEngine', () => {
       });
 
       test('should handle examine item', () => {
-        const command: ParsedCommand = {
-          verb: 'examine',
-          noun: 'table',
-          originalInput: 'examine table',
-          isValid: true
-        };
-
-        const result = gameEngine.executeCommand(testSessionId, command);
+        const parsed = commandParser.parse('examine table');
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         
         expect(result.success).toBe(true);
         expect(result.message).toContain('You examine the table');
@@ -296,13 +281,8 @@ describe('GameEngine', () => {
       test('should show inventory with items', () => {
         gameEngine.updateGameState(testSessionId, { inventory: ['sword', 'potion'] });
 
-        const command: ParsedCommand = {
-          verb: 'inv',
-          originalInput: 'inv',
-          isValid: true
-        };
-
-        const result = gameEngine.executeCommand(testSessionId, command);
+        const parsed = commandParser.parse('inv');
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         
         expect(result.success).toBe(true);
         expect(result.message).toContain('You are carrying: sword, potion');
@@ -312,13 +292,8 @@ describe('GameEngine', () => {
       test('should handle "i" shortcut for inventory', () => {
         gameEngine.updateGameState(testSessionId, { inventory: ['magic wand'] });
 
-        const command: ParsedCommand = {
-          verb: 'i',
-          originalInput: 'i',
-          isValid: true
-        };
-
-        const result = gameEngine.executeCommand(testSessionId, command);
+        const parsed = commandParser.parse('i');
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         
         expect(result.success).toBe(true);
         expect(result.message).toContain('You are carrying: magic wand');
@@ -342,13 +317,8 @@ describe('GameEngine', () => {
       });
 
       test('should show help text for commands verb', () => {
-        const command: ParsedCommand = {
-          verb: 'commands',
-          originalInput: 'commands',
-          isValid: true
-        };
-
-        const result = gameEngine.executeCommand(testSessionId, command);
+        const parsed = commandParser.parse('commands');
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         
         expect(result.success).toBe(true);
         expect(result.message).toContain('Available commands:');
@@ -402,13 +372,8 @@ describe('GameEngine', () => {
       });
 
       test('should handle exit command', () => {
-        const command: ParsedCommand = {
-          verb: 'exit',
-          originalInput: 'exit',
-          isValid: true
-        };
-
-        const result = gameEngine.executeCommand(testSessionId, command);
+        const parsed = commandParser.parse('exit');
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         
         expect(result.success).toBe(true);
         expect(result.message).toContain('Thanks for playing');

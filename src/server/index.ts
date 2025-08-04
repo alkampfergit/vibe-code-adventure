@@ -9,7 +9,7 @@ const PORT = 8000;
 
 // Initialize game services
 const commandParser = new CommandParser();
-const gameEngine = new GameEngine();
+const gameEngine = new GameEngine(commandParser);
 
 app.use(cors());
 app.use(express.json());
@@ -137,6 +137,22 @@ app.get('/api/game/state/:sessionId', async (req, res) => {
     res.json({ gameState });
   } catch (error) {
     console.error('Get game state error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/api/game/synonyms', (req, res) => {
+  try {
+    const synonyms = commandParser.getSynonyms();
+    const validVerbs = commandParser.getValidVerbs();
+    
+    res.json({
+      synonyms,
+      validVerbs,
+      documentation: 'Synonyms are alternative words you can use for commands. Each synonym maps to a canonical command.'
+    });
+  } catch (error) {
+    console.error('Get synonyms error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

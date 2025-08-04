@@ -2,15 +2,16 @@ import { ParsedCommand } from '../types/command';
 
 export class CommandFeedback {
   private readonly validVerbs = [
-    'go', 'move', 'walk',
-    'take', 'get', 'pick',
-    'drop', 'put',
-    'look', 'examine', 'inspect',
-    'inventory', 'inv', 'i',
-    'help', 'commands',
-    'quit', 'exit',
-    'score',
-    'save', 'load'
+    'go', 'move', 'walk', 'travel', 'head', 'venture',
+    'take', 'get', 'pick', 'grab', 'collect', 'acquire', 'obtain', 'pickup', 'snatch',
+    'drop', 'put', 'place', 'release', 'discard', 'throw',
+    'look', 'examine', 'inspect', 'view', 'observe', 'check', 'see', 'watch', 'study',
+    'inventory', 'inv', 'i', 'items', 'possessions', 'belongings', 'stuff', 'gear',
+    'help', 'commands', 'assist', 'info', 'instructions', '?',
+    'quit', 'exit', 'leave', 'bye', 'goodbye', 'stop', 'end',
+    'score', 'points', 'rating', 'status',
+    'save', 'store', 'preserve',
+    'load', 'restore', 'retrieve'
   ];
 
   private readonly commonMisspellings: Record<string, string> = {

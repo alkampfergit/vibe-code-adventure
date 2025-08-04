@@ -75,13 +75,31 @@ describe('CommandParser', () => {
       expect(result.isValid).toBe(false);
     });
 
-    test('should recognize all valid verbs', () => {
+    test('should recognize all valid verbs and map synonyms to canonical', () => {
       const validVerbs = ['go', 'move', 'walk', 'take', 'get', 'pick', 'drop', 'put', 'look', 'examine', 'inspect', 'inventory', 'inv', 'i', 'help', 'commands', 'quit', 'exit', 'score', 'save', 'load'];
       
       validVerbs.forEach(verb => {
         const result = parser.parse(verb);
         expect(result.isValid).toBe(true);
-        expect(result.verb).toBe(verb);
+        // Don't expect the verb to match the input verb anymore, since synonyms are mapped
+        expect(result.verb).toBeDefined();
+      });
+    });
+
+    test('should map synonyms to canonical commands', () => {
+      const synonymTests = [
+        { input: 'grab', expected: 'take' },
+        { input: 'examine', expected: 'look' },
+        { input: 'move', expected: 'go' },
+        { input: 'inv', expected: 'inventory' },
+        { input: 'commands', expected: 'help' },
+        { input: 'exit', expected: 'quit' }
+      ];
+
+      synonymTests.forEach(({ input, expected }) => {
+        const result = parser.parse(input);
+        expect(result.isValid).toBe(true);
+        expect(result.verb).toBe(expected);
       });
     });
   });

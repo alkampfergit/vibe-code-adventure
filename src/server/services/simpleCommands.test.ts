@@ -229,7 +229,7 @@ describe('Simple Commands (User Story gh19)', () => {
       shortcuts.forEach(shortcut => {
         const parsed = commandParser.parse(shortcut);
         expect(parsed.isValid).toBe(true);
-        expect(parsed.verb).toBe(shortcut);
+        expect(parsed.verb).toBe('inventory'); // All map to canonical 'inventory'
       });
     });
 
@@ -237,7 +237,9 @@ describe('Simple Commands (User Story gh19)', () => {
       const helpCommands = ['help', 'commands'];
       
       helpCommands.forEach(command => {
-        const result = gameEngine.executeCommand(testSessionId, commandParser.parse(command));
+        const parsed = commandParser.parse(command);
+        expect(parsed.verb).toBe('help'); // Both map to canonical 'help'
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         expect(result.success).toBe(true);
         expect(result.message).toContain('Available commands');
       });
@@ -247,7 +249,9 @@ describe('Simple Commands (User Story gh19)', () => {
       const exitCommands = ['quit', 'exit'];
       
       exitCommands.forEach(command => {
-        const result = gameEngine.executeCommand(testSessionId, commandParser.parse(command));
+        const parsed = commandParser.parse(command);
+        expect(parsed.verb).toBe('quit'); // Both map to canonical 'quit'
+        const result = gameEngine.executeCommand(testSessionId, parsed);
         expect(result.success).toBe(true);
         expect(result.message).toContain('Thanks for playing');
       });

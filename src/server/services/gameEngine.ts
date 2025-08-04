@@ -1,12 +1,15 @@
 import { ParsedCommand, CommandResult, GameState } from '../types/command';
 import { CommandFeedback } from './commandFeedback';
+import { CommandParser } from './commandParser';
 
 export class GameEngine {
   private gameStates: Map<string, GameState> = new Map();
   private commandFeedback: CommandFeedback;
+  private commandParser: CommandParser;
 
-  constructor() {
+  constructor(commandParser?: CommandParser) {
     this.commandFeedback = new CommandFeedback();
+    this.commandParser = commandParser || new CommandParser();
   }
 
   getGameState(sessionId: string): GameState {
@@ -38,35 +41,24 @@ export class GameEngine {
 
     switch (command.verb) {
       case 'go':
-      case 'move':
-      case 'walk':
         return this.handleMovement(sessionId, command, gameState);
 
       case 'take':
-      case 'get':
-      case 'pick':
         return this.handleTake(sessionId, command, gameState);
 
       case 'drop':
-      case 'put':
         return this.handleDrop(sessionId, command, gameState);
 
       case 'look':
-      case 'examine':
-      case 'inspect':
         return this.handleLook(sessionId, command, gameState);
 
       case 'inventory':
-      case 'inv':
-      case 'i':
         return this.handleInventory(sessionId, gameState);
 
       case 'help':
-      case 'commands':
         return this.handleHelp();
 
       case 'quit':
-      case 'exit':
         return this.handleQuit();
 
       case 'score':
@@ -221,20 +213,30 @@ export class GameEngine {
   }
 
   private handleHelp(): CommandResult {
+    const synonyms = this.commandParser.getSynonyms();
+    
+    const buildCommandWithSynonyms = (command: string, description: string, syntax?: string) => {
+      const commandSynonyms = synonyms[command] || [];
+      const synonymsList = commandSynonyms.length > 0 ? ` (${commandSynonyms.join(', ')})` : '';
+      const fullSyntax = syntax ? `${command} ${syntax}` : command;
+      return `- ${fullSyntax}${synonymsList}: ${description}`;
+    };
+
     const helpText = `
 Available commands:
-- go <direction>: Move in a direction (north, south, east, west, up, down)
-- take <item>: Pick up an item
-- drop <item>: Drop an item from your inventory
-- look [item]: Look around or examine something
-- inventory (i): Check what you're carrying
-- score: View your current score
-- help: Show this help message
-- quit/exit: Exit the game
-- save: Save your progress
-- load: Load saved progress
+${buildCommandWithSynonyms('go', 'Move in a direction (north, south, east, west, up, down)', '<direction>')}
+${buildCommandWithSynonyms('take', 'Pick up an item', '<item>')}
+${buildCommandWithSynonyms('drop', 'Drop an item from your inventory', '<item>')}
+${buildCommandWithSynonyms('look', 'Look around or examine something', '[item]')}
+${buildCommandWithSynonyms('inventory', 'Check what you are carrying')}
+${buildCommandWithSynonyms('score', 'View your current score')}
+${buildCommandWithSynonyms('help', 'Show this help message')}
+${buildCommandWithSynonyms('quit', 'Exit the game')}
+${buildCommandWithSynonyms('save', 'Save your progress')}
+${buildCommandWithSynonyms('load', 'Load saved progress')}
 
-Example: "go north", "take key", "look sword", "inventory"
+Examples: "go north", "grab key", "examine sword", "items"
+You can use any of the synonyms shown in parentheses interchangeably.
     `.trim();
 
     return {
