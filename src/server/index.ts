@@ -3,6 +3,7 @@ import cors from 'cors';
 import { database } from './database';
 import { CommandParser } from './services/commandParser';
 import { GameEngine } from './services/gameEngine';
+import { ExampleCommandsService } from './services/exampleCommands';
 
 const app = express();
 const PORT = 8000;
@@ -10,6 +11,7 @@ const PORT = 8000;
 // Initialize game services
 const commandParser = new CommandParser();
 const gameEngine = new GameEngine(commandParser);
+const exampleCommands = new ExampleCommandsService();
 
 app.use(cors());
 app.use(express.json());
@@ -153,6 +155,49 @@ app.get('/api/game/synonyms', (req, res) => {
     });
   } catch (error) {
     console.error('Get synonyms error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/api/game/examples', (req, res) => {
+  try {
+    const category = req.query.category as string;
+    
+    let examples;
+    let responseData: any = {
+      availableCategories: ['movement', 'items', 'interaction', 'information', 'game', 'new']
+    };
+
+    switch (category) {
+      case 'movement':
+      case 'items':
+      case 'interaction':
+      case 'information':
+      case 'game':
+        examples = exampleCommands.getExamplesByCategory(category as any);
+        responseData.category = category;
+        break;
+      case 'new':
+      case 'beginner':
+        examples = exampleCommands.getExamplesForNewPlayers();
+        responseData.category = 'new';
+        break;
+      case 'random':
+        examples = exampleCommands.getRandomExamples();
+        responseData.category = 'random';
+        break;
+      default:
+        examples = exampleCommands.getAllExamples();
+        responseData.category = 'all';
+        break;
+    }
+
+    responseData.examples = examples;
+    responseData.quickStartGuide = exampleCommands.getQuickStartGuide();
+    
+    res.json(responseData);
+  } catch (error) {
+    console.error('Get examples error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

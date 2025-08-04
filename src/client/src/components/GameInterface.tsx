@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Container, 
   Paper, 
@@ -14,7 +14,12 @@ import {
   DialogContentText,
   Tabs,
   Tab,
-  Grid
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Chip
 } from '@mui/material';
 import UserList from './UserList';
 import CommandInput from './CommandInput';
@@ -33,10 +38,18 @@ interface GameMessage {
   timestamp: Date;
 }
 
+interface CommandExample {
+  command: string;
+  description: string;
+  category: string;
+}
+
 const GameInterface: React.FC<GameInterfaceProps> = ({ username, sessionId, onLogout }) => {
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [examplesDialogOpen, setExamplesDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [gameMessages, setGameMessages] = useState<GameMessage[]>([]);
+  const [examples, setExamples] = useState<CommandExample[]>([]);
 
   const handleLogoutClick = () => {
     setLogoutDialogOpen(true);
@@ -97,6 +110,26 @@ const GameInterface: React.FC<GameInterfaceProps> = ({ username, sessionId, onLo
     setGameMessages(prev => [...prev, resultMessage]);
   };
 
+  const handleExamplesClick = async () => {
+    try {
+      const response = await fetch('/api/game/examples?category=new');
+      const data = await response.json();
+      setExamples(data.examples || []);
+      setExamplesDialogOpen(true);
+    } catch (error) {
+      console.error('Failed to fetch examples:', error);
+      // Show default examples if fetch fails
+      setExamples([
+        { command: 'look', description: 'Look around to see where you are', category: 'information' },
+        { command: 'go north', description: 'Try moving in different directions', category: 'movement' },
+        { command: 'take key', description: 'Pick up items you find', category: 'items' },
+        { command: 'inventory', description: 'Check what you are carrying', category: 'information' },
+        { command: 'help', description: 'Get help when you are stuck', category: 'information' }
+      ]);
+      setExamplesDialogOpen(true);
+    }
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 0:
@@ -144,6 +177,16 @@ const GameInterface: React.FC<GameInterfaceProps> = ({ username, sessionId, onLo
                       <li>save/load - Save/load game</li>
                       <li>quit/exit - Exit game</li>
                     </Typography>
+                    <Box sx={{ mt: 2 }}>
+                      <Button 
+                        variant="outlined" 
+                        size="small" 
+                        onClick={handleExamplesClick}
+                        fullWidth
+                      >
+                        View Examples
+                      </Button>
+                    </Box>
                   </Box>
                 </Paper>
               </Grid>
@@ -200,6 +243,66 @@ const GameInterface: React.FC<GameInterfaceProps> = ({ username, sessionId, onLo
           <Button onClick={handleLogoutCancel}>Cancel</Button>
           <Button onClick={handleLogoutConfirm} color="primary" autoFocus>
             Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog 
+        open={examplesDialogOpen} 
+        onClose={() => setExamplesDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Command Examples - Quick Start Guide</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            Here are some essential commands to get you started in your text adventure:
+          </DialogContentText>
+          <List>
+            {examples.map((example, index) => (
+              <React.Fragment key={index}>
+                <ListItem>
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography 
+                          variant="body1" 
+                          component="code" 
+                          sx={{ 
+                            backgroundColor: 'grey.100', 
+                            padding: '2px 6px', 
+                            borderRadius: 1,
+                            fontFamily: 'monospace' 
+                          }}
+                        >
+                          {example.command}
+                        </Typography>
+                        <Chip 
+                          label={example.category} 
+                          size="small" 
+                          variant="outlined"
+                          sx={{ textTransform: 'capitalize' }}
+                        />
+                      </Box>
+                    }
+                    secondary={example.description}
+                  />
+                </ListItem>
+                {index < examples.length - 1 && <Divider />}
+              </React.Fragment>
+            ))}
+          </List>
+          <Box sx={{ mt: 2, p: 2, backgroundColor: 'info.50', borderRadius: 1 }}>
+            <Typography variant="body2" color="info.main">
+              <strong>Tips:</strong> Commands are not case-sensitive, and you can use synonyms 
+              (e.g., "grab" instead of "take"). Type "help" anytime for more commands, 
+              or "examples" in the game to see more detailed examples!
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setExamplesDialogOpen(false)} color="primary">
+            Got it!
           </Button>
         </DialogActions>
       </Dialog>

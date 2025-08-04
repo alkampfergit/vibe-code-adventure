@@ -71,6 +71,12 @@ export class CommandParser {
     'instructions': 'help',
     '?': 'help',
 
+    // Examples synonyms
+    'examples': 'examples',
+    'demo': 'examples',
+    'tutorial': 'examples',
+    'guide': 'examples',
+
     // Quit synonyms
     'quit': 'quit',
     'exit': 'quit',
@@ -94,7 +100,15 @@ export class CommandParser {
     // Load synonyms
     'load': 'load',
     'restore': 'load',
-    'retrieve': 'load'
+    'retrieve': 'load',
+
+    // Future command placeholders (for examples)
+    'talk': 'talk',
+    'speak': 'talk',
+    'use': 'use',
+    'open': 'open',
+    'push': 'push',
+    'pull': 'pull'
   };
 
   parse(input: string): ParsedCommand {

@@ -1,15 +1,18 @@
 import { ParsedCommand, CommandResult, GameState } from '../types/command';
 import { CommandFeedback } from './commandFeedback';
 import { CommandParser } from './commandParser';
+import { ExampleCommandsService } from './exampleCommands';
 
 export class GameEngine {
   private gameStates: Map<string, GameState> = new Map();
   private commandFeedback: CommandFeedback;
   private commandParser: CommandParser;
+  private exampleCommands: ExampleCommandsService;
 
   constructor(commandParser?: CommandParser) {
     this.commandFeedback = new CommandFeedback();
     this.commandParser = commandParser || new CommandParser();
+    this.exampleCommands = new ExampleCommandsService();
   }
 
   getGameState(sessionId: string): GameState {
@@ -58,6 +61,9 @@ export class GameEngine {
       case 'help':
         return this.handleHelp();
 
+      case 'examples':
+        return this.handleExamples(sessionId, command);
+
       case 'quit':
         return this.handleQuit();
 
@@ -69,6 +75,21 @@ export class GameEngine {
 
       case 'load':
         return this.handleLoad(sessionId, command);
+
+      case 'talk':
+        return this.handleFutureCommand('talk', 'NPC conversations');
+
+      case 'use':
+        return this.handleFutureCommand('use', 'item usage');
+
+      case 'open':
+        return this.handleFutureCommand('open', 'opening objects');
+
+      case 'push':
+        return this.handleFutureCommand('push', 'pushing objects');
+
+      case 'pull':
+        return this.handleFutureCommand('pull', 'pulling objects');
 
       default:
         return {
@@ -231,12 +252,15 @@ ${buildCommandWithSynonyms('look', 'Look around or examine something', '[item]')
 ${buildCommandWithSynonyms('inventory', 'Check what you are carrying')}
 ${buildCommandWithSynonyms('score', 'View your current score')}
 ${buildCommandWithSynonyms('help', 'Show this help message')}
+${buildCommandWithSynonyms('examples', 'Show detailed command examples and tutorials')}
 ${buildCommandWithSynonyms('quit', 'Exit the game')}
 ${buildCommandWithSynonyms('save', 'Save your progress')}
 ${buildCommandWithSynonyms('load', 'Load saved progress')}
 
 Examples: "go north", "grab key", "examine sword", "items"
 You can use any of the synonyms shown in parentheses interchangeably.
+
+Type "examples" to see detailed command examples and tutorials.
     `.trim();
 
     return {
@@ -273,6 +297,77 @@ You can use any of the synonyms shown in parentheses interchangeably.
     return {
       success: true,
       message: "Game loaded successfully! (Your progress is automatically maintained per session)"
+    };
+  }
+
+  private handleExamples(sessionId: string, command: ParsedCommand): CommandResult {
+    // Check if a specific category is requested
+    const category = command.noun?.toLowerCase();
+    
+    let examples;
+    let title = 'Command Examples';
+    
+    switch (category) {
+      case 'movement':
+      case 'move':
+      case 'go':
+        examples = this.exampleCommands.getExamplesByCategory('movement');
+        title = 'Movement Examples';
+        break;
+      case 'items':
+      case 'item':
+      case 'objects':
+        examples = this.exampleCommands.getExamplesByCategory('items');
+        title = 'Item Examples';
+        break;
+      case 'interaction':
+      case 'interact':
+      case 'actions':
+        examples = this.exampleCommands.getExamplesByCategory('interaction');
+        title = 'Interaction Examples';
+        break;
+      case 'info':
+      case 'information':
+      case 'status':
+        examples = this.exampleCommands.getExamplesByCategory('information');
+        title = 'Information Examples';
+        break;
+      case 'game':
+      case 'management':
+        examples = this.exampleCommands.getExamplesByCategory('game');
+        title = 'Game Management Examples';
+        break;
+      case 'new':
+      case 'beginner':
+      case 'start':
+        examples = this.exampleCommands.getExamplesForNewPlayers();
+        title = 'Quick Start Guide';
+        break;
+      case 'random':
+        examples = this.exampleCommands.getRandomExamples();
+        title = 'Random Command Examples';
+        break;
+      default:
+        examples = this.exampleCommands.getAllExamples();
+        break;
+    }
+
+    const formattedExamples = this.exampleCommands.formatExamplesForDisplay(examples);
+    
+    return {
+      success: true,
+      message: formattedExamples,
+      data: { 
+        examples: examples.map(ex => ({ command: ex.command, description: ex.description })),
+        category: category || 'all'
+      }
+    };
+  }
+
+  private handleFutureCommand(verb: string, feature: string): CommandResult {
+    return {
+      success: false,
+      message: `The "${verb}" command is planned for future implementation (${feature}). Stay tuned for updates!`
     };
   }
 }
