@@ -1,10 +1,12 @@
 import { ParsedCommand, CommandResult, GameState } from '../types/command';
+import { CommandFeedback } from './commandFeedback';
 
 export class GameEngine {
   private gameStates: Map<string, GameState> = new Map();
+  private commandFeedback: CommandFeedback;
 
   constructor() {
-    // Initialize with default state
+    this.commandFeedback = new CommandFeedback();
   }
 
   getGameState(sessionId: string): GameState {
@@ -28,7 +30,7 @@ export class GameEngine {
     if (!command.isValid) {
       return {
         success: false,
-        message: `I don't understand "${command.originalInput}". Try typing "help" for available commands.`
+        message: this.commandFeedback.generateFeedback(command)
       };
     }
 
@@ -88,18 +90,37 @@ export class GameEngine {
     if (!command.noun) {
       return {
         success: false,
-        message: "Where do you want to go? Try 'go north' or 'go south'."
+        message: "Where do you want to go? Try 'go north', 'go south', 'go east', 'go west', 'go up', or 'go down'."
       };
     }
 
     // Basic movement logic - this will be expanded with actual room system
-    const direction = command.noun;
+    const direction = command.noun.toLowerCase();
     const validDirections = ['north', 'south', 'east', 'west', 'up', 'down'];
     
     if (!validDirections.includes(direction)) {
+      // Check for common direction variations and typos
+      const directionMappings: Record<string, string> = {
+        'n': 'north', 'no': 'north', 'nor': 'north',
+        's': 'south', 'so': 'south', 'sou': 'south',
+        'e': 'east', 'ea': 'east', 'eas': 'east',
+        'w': 'west', 'we': 'west', 'wes': 'west',
+        'u': 'up', 'upward': 'up', 'upwards': 'up',
+        'd': 'down', 'downward': 'down', 'downwards': 'down'
+      };
+
+      if (directionMappings[direction]) {
+        const correctedDirection = directionMappings[direction];
+        return {
+          success: true,
+          message: `You move ${correctedDirection}.`,
+          data: { direction: correctedDirection }
+        };
+      }
+
       return {
         success: false,
-        message: `You can't go ${direction}. Valid directions are: ${validDirections.join(', ')}.`
+        message: `You can't go "${direction}". Valid directions are: ${validDirections.join(', ')}. You can also use short forms like 'n', 's', 'e', 'w'.`
       };
     }
 
@@ -115,7 +136,7 @@ export class GameEngine {
     if (!command.noun) {
       return {
         success: false,
-        message: "What do you want to take?"
+        message: "What do you want to take? Try 'take key', 'take sword', or 'take coin'. Use 'look' to see what's available."
       };
     }
 
@@ -144,7 +165,7 @@ export class GameEngine {
     if (!command.noun) {
       return {
         success: false,
-        message: "What do you want to drop?"
+        message: "What do you want to drop? Try 'drop sword' or 'drop key'. Use 'inventory' to see what you're carrying."
       };
     }
 

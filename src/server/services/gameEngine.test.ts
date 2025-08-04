@@ -108,7 +108,7 @@ describe('GameEngine', () => {
         const result = gameEngine.executeCommand(testSessionId, command);
         
         expect(result.success).toBe(false);
-        expect(result.message).toContain("You can't go diagonal");
+        expect(result.message).toContain("You can't go \"diagonal\"");
       });
 
       test('should accept all valid directions', () => {
