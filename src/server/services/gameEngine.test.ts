@@ -308,6 +308,21 @@ describe('GameEngine', () => {
         expect(result.message).toContain('You are carrying: sword, potion');
         expect(result.data?.inventory).toEqual(['sword', 'potion']);
       });
+
+      test('should handle "i" shortcut for inventory', () => {
+        gameEngine.updateGameState(testSessionId, { inventory: ['magic wand'] });
+
+        const command: ParsedCommand = {
+          verb: 'i',
+          originalInput: 'i',
+          isValid: true
+        };
+
+        const result = gameEngine.executeCommand(testSessionId, command);
+        
+        expect(result.success).toBe(true);
+        expect(result.message).toContain('You are carrying: magic wand');
+      });
     });
 
     describe('help commands', () => {
@@ -337,6 +352,94 @@ describe('GameEngine', () => {
         
         expect(result.success).toBe(true);
         expect(result.message).toContain('Available commands:');
+      });
+    });
+
+    describe('score commands', () => {
+      test('should show current score', () => {
+        const command: ParsedCommand = {
+          verb: 'score',
+          originalInput: 'score',
+          isValid: true
+        };
+
+        const result = gameEngine.executeCommand(testSessionId, command);
+        
+        expect(result.success).toBe(true);
+        expect(result.message).toContain('Your current score is 0 points');
+        expect(result.data?.score).toBe(0);
+      });
+
+      test('should show updated score', () => {
+        gameEngine.updateGameState(testSessionId, { score: 25 });
+
+        const command: ParsedCommand = {
+          verb: 'score',
+          originalInput: 'score',
+          isValid: true
+        };
+
+        const result = gameEngine.executeCommand(testSessionId, command);
+        
+        expect(result.success).toBe(true);
+        expect(result.message).toContain('Your current score is 25 points');
+        expect(result.data?.score).toBe(25);
+      });
+    });
+
+    describe('quit commands', () => {
+      test('should handle quit command', () => {
+        const command: ParsedCommand = {
+          verb: 'quit',
+          originalInput: 'quit',
+          isValid: true
+        };
+
+        const result = gameEngine.executeCommand(testSessionId, command);
+        
+        expect(result.success).toBe(true);
+        expect(result.message).toContain('Thanks for playing');
+      });
+
+      test('should handle exit command', () => {
+        const command: ParsedCommand = {
+          verb: 'exit',
+          originalInput: 'exit',
+          isValid: true
+        };
+
+        const result = gameEngine.executeCommand(testSessionId, command);
+        
+        expect(result.success).toBe(true);
+        expect(result.message).toContain('Thanks for playing');
+      });
+    });
+
+    describe('save/load commands', () => {
+      test('should handle save command', () => {
+        const command: ParsedCommand = {
+          verb: 'save',
+          originalInput: 'save',
+          isValid: true
+        };
+
+        const result = gameEngine.executeCommand(testSessionId, command);
+        
+        expect(result.success).toBe(true);
+        expect(result.message).toContain('saved successfully');
+      });
+
+      test('should handle load command', () => {
+        const command: ParsedCommand = {
+          verb: 'load',
+          originalInput: 'load',
+          isValid: true
+        };
+
+        const result = gameEngine.executeCommand(testSessionId, command);
+        
+        expect(result.success).toBe(true);
+        expect(result.message).toContain('loaded successfully');
       });
     });
   });

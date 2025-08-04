@@ -6,8 +6,11 @@ export class CommandParser {
     'take', 'get', 'pick',
     'drop', 'put',
     'look', 'examine', 'inspect',
-    'inventory', 'inv',
-    'help', 'commands'
+    'inventory', 'inv', 'i',
+    'help', 'commands',
+    'quit', 'exit',
+    'score',
+    'save', 'load'
   ];
 
   parse(input: string): ParsedCommand {

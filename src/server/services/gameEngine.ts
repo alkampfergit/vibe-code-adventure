@@ -56,11 +56,25 @@ export class GameEngine {
 
       case 'inventory':
       case 'inv':
+      case 'i':
         return this.handleInventory(sessionId, gameState);
 
       case 'help':
       case 'commands':
         return this.handleHelp();
+
+      case 'quit':
+      case 'exit':
+        return this.handleQuit();
+
+      case 'score':
+        return this.handleScore(sessionId, gameState);
+
+      case 'save':
+        return this.handleSave(sessionId, gameState);
+
+      case 'load':
+        return this.handleLoad(sessionId, command);
 
       default:
         return {
@@ -192,15 +206,50 @@ Available commands:
 - take <item>: Pick up an item
 - drop <item>: Drop an item from your inventory
 - look [item]: Look around or examine something
-- inventory: Check what you're carrying
+- inventory (i): Check what you're carrying
+- score: View your current score
 - help: Show this help message
+- quit/exit: Exit the game
+- save: Save your progress
+- load: Load saved progress
 
-Example: "go north", "take key", "look sword"
+Example: "go north", "take key", "look sword", "inventory"
     `.trim();
 
     return {
       success: true,
       message: helpText
+    };
+  }
+
+  private handleQuit(): CommandResult {
+    return {
+      success: true,
+      message: "Thanks for playing! Your progress has been automatically saved."
+    };
+  }
+
+  private handleScore(sessionId: string, gameState: GameState): CommandResult {
+    return {
+      success: true,
+      message: `Your current score is ${gameState.score} points.`,
+      data: { score: gameState.score }
+    };
+  }
+
+  private handleSave(sessionId: string, gameState: GameState): CommandResult {
+    // For now, just simulate saving since state is already persistent per session
+    return {
+      success: true,
+      message: "Game saved successfully!"
+    };
+  }
+
+  private handleLoad(sessionId: string, command: ParsedCommand): CommandResult {
+    // For now, just acknowledge the load command
+    return {
+      success: true,
+      message: "Game loaded successfully! (Your progress is automatically maintained per session)"
     };
   }
 }

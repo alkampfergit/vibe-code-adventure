@@ -76,7 +76,7 @@ describe('CommandParser', () => {
     });
 
     test('should recognize all valid verbs', () => {
-      const validVerbs = ['go', 'move', 'walk', 'take', 'get', 'pick', 'drop', 'put', 'look', 'examine', 'inspect', 'inventory', 'inv', 'help', 'commands'];
+      const validVerbs = ['go', 'move', 'walk', 'take', 'get', 'pick', 'drop', 'put', 'look', 'examine', 'inspect', 'inventory', 'inv', 'i', 'help', 'commands', 'quit', 'exit', 'score', 'save', 'load'];
       
       validVerbs.forEach(verb => {
         const result = parser.parse(verb);

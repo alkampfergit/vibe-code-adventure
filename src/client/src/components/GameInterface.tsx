@@ -136,10 +136,13 @@ const GameInterface: React.FC<GameInterfaceProps> = ({ username, sessionId, onLo
                     <Typography variant="body2" component="ul" sx={{ pl: 2 }}>
                       <li>help - Show all commands</li>
                       <li>look - Look around</li>
-                      <li>inventory - Check items</li>
+                      <li>inventory (i) - Check items</li>
+                      <li>score - View your score</li>
                       <li>go north/south/east/west</li>
                       <li>take [item] - Pick up item</li>
                       <li>drop [item] - Drop item</li>
+                      <li>save/load - Save/load game</li>
+                      <li>quit/exit - Exit game</li>
                     </Typography>
                   </Box>
                 </Paper>
