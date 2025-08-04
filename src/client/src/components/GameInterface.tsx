@@ -13,9 +13,12 @@ import {
   DialogActions,
   DialogContentText,
   Tabs,
-  Tab
+  Tab,
+  Grid
 } from '@mui/material';
 import UserList from './UserList';
+import CommandInput from './CommandInput';
+import GameOutput from './GameOutput';
 
 interface GameInterfaceProps {
   username: string;
@@ -23,9 +26,17 @@ interface GameInterfaceProps {
   onLogout: () => void;
 }
 
+interface GameMessage {
+  id: string;
+  type: 'command' | 'result' | 'error';
+  content: string;
+  timestamp: Date;
+}
+
 const GameInterface: React.FC<GameInterfaceProps> = ({ username, sessionId, onLogout }) => {
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [gameMessages, setGameMessages] = useState<GameMessage[]>([]);
 
   const handleLogoutClick = () => {
     setLogoutDialogOpen(true);
@@ -56,32 +67,91 @@ const GameInterface: React.FC<GameInterfaceProps> = ({ username, sessionId, onLo
     setActiveTab(newValue);
   };
 
+  const handleCommandResult = (commandData: any) => {
+    const timestamp = new Date();
+    const commandId = `cmd_${timestamp.getTime()}`;
+    const resultId = `res_${timestamp.getTime()}`;
+
+    // Add the command to messages
+    if (commandData.parsedCommand && commandData.parsedCommand.verb) {
+      const commandText = commandData.parsedCommand.noun 
+        ? `${commandData.parsedCommand.verb} ${commandData.parsedCommand.noun}`
+        : commandData.parsedCommand.verb;
+      
+      setGameMessages(prev => [...prev, {
+        id: commandId,
+        type: 'command',
+        content: commandText,
+        timestamp
+      }]);
+    }
+
+    // Add the result to messages
+    const resultMessage: GameMessage = {
+      id: resultId,
+      type: commandData.result.success ? 'result' : 'error',
+      content: commandData.result.message,
+      timestamp
+    };
+
+    setGameMessages(prev => [...prev, resultMessage]);
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 0:
         return (
-          <Container maxWidth="md" sx={{ mt: 4 }}>
-            <Paper elevation={3} sx={{ padding: 4 }}>
-              <Typography variant="h4" component="h1" gutterBottom>
-                Welcome to the Adventure!
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                Hello {username}, you are now logged in and ready to begin your text adventure.
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Session ID: {sessionId}
-              </Typography>
-              
-              <Box sx={{ mt: 4 }}>
-                <Typography variant="h6" gutterBottom>
-                  Game coming soon...
-                </Typography>
-                <Typography variant="body1">
-                  This is where the text adventure game will be implemented. 
-                  Your session is active and will persist until you log out.
-                </Typography>
-              </Box>
-            </Paper>
+          <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Paper elevation={3} sx={{ padding: 3 }}>
+                  <Typography variant="h4" component="h1" gutterBottom>
+                    Welcome to the Adventure!
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    Hello {username}, you are now logged in and ready to begin your text adventure.
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Session ID: {sessionId}
+                  </Typography>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} md={8}>
+                <GameOutput messages={gameMessages} />
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <Paper elevation={2} sx={{ p: 2, height: 400, overflow: 'auto' }}>
+                  <Typography variant="h6" gutterBottom>
+                    Game Info
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Use the command input below to interact with the game world.
+                  </Typography>
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Quick Commands:
+                    </Typography>
+                    <Typography variant="body2" component="ul" sx={{ pl: 2 }}>
+                      <li>help - Show all commands</li>
+                      <li>look - Look around</li>
+                      <li>inventory - Check items</li>
+                      <li>go north/south/east/west</li>
+                      <li>take [item] - Pick up item</li>
+                      <li>drop [item] - Drop item</li>
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12}>
+                <CommandInput
+                  sessionId={sessionId}
+                  onCommandResult={handleCommandResult}
+                />
+              </Grid>
+            </Grid>
           </Container>
         );
       case 1:

@@ -32,6 +32,13 @@ This stack is designed for rapid development, scalability, and maintainability, 
 - Write unit tests after implementing a feature to verify its functionality
 - Prefer testing each feature instead of doing end-to-end tests
 
+## USER STORY WRITING
+
+When you implement a .userstory.md file, you should always generate unit tests and foster inversion of control creating components that are not have hard dependencies on other components. This will allow you to develop user stories in isolation.
+
+All user stories are in specs subfolder in a directory with a number.
+
+
 ## ⁠Server Management
 
 - don't run 'npm run dev', always try to use active running server first because the user usually keeps a server running

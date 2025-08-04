@@ -1,9 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import { database } from './database';
+import { CommandParser } from './services/commandParser';
+import { GameEngine } from './services/gameEngine';
 
 const app = express();
 const PORT = 8000;
+
+// Initialize game services
+const commandParser = new CommandParser();
+const gameEngine = new GameEngine();
 
 app.use(cors());
 app.use(express.json());
@@ -77,6 +83,60 @@ app.get('/api/users', async (req, res) => {
     res.json({ users });
   } catch (error) {
     console.error('Get users error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/api/game/command', async (req, res) => {
+  try {
+    const { sessionId, command } = req.body;
+    
+    if (!sessionId || !command) {
+      return res.status(400).json({ error: 'Session ID and command are required' });
+    }
+
+    // Validate session exists
+    const session = await database.getSession(sessionId);
+    if (!session) {
+      return res.status(401).json({ error: 'Invalid session' });
+    }
+
+    // Parse and execute command
+    const parsedCommand = commandParser.parse(command);
+    const result = gameEngine.executeCommand(sessionId, parsedCommand);
+
+    // Update last active
+    await database.updateLastActive(sessionId);
+
+    res.json({
+      success: true,
+      result,
+      parsedCommand: {
+        verb: parsedCommand.verb,
+        noun: parsedCommand.noun,
+        isValid: parsedCommand.isValid
+      }
+    });
+  } catch (error) {
+    console.error('Command processing error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/api/game/state/:sessionId', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    
+    // Validate session
+    const session = await database.getSession(sessionId);
+    if (!session) {
+      return res.status(401).json({ error: 'Invalid session' });
+    }
+
+    const gameState = gameEngine.getGameState(sessionId);
+    res.json({ gameState });
+  } catch (error) {
+    console.error('Get game state error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
